@@ -1,0 +1,60 @@
+import pygame
+
+pygame.init()
+
+
+class WINDOW:
+    WIDTH = 600
+    HEIGHT = 600
+    SIZE = (WIDTH, HEIGHT)
+    TITLE = "TIC TAC TOE"
+
+
+class UPDATE:
+    FPS = 60
+    PORT = 50019
+
+
+class COLOURS:
+    BLUE = (0, 0, 255)
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    GREY = (55, 55, 55)
+
+    TRANSPARENT_BACKGROUND = (0, 0, 0, 0)
+
+
+class GAME_UI:
+    USERNAME_LABEL_WIDTH = WINDOW.WIDTH * 0.5
+    SCORE_LABEL_WIDTH = WINDOW.WIDTH * 0.3
+    LABEL_HEIGHT = WINDOW.HEIGHT * 0.1
+    MARGIN = WINDOW.WIDTH * 0.05
+
+    FONT_SIZE = 32
+
+
+class UI:
+    FONT_NAME = "Consolas"
+
+
+class MAINMENU_UI:
+    # Colors
+    TEXT_COLOR = COLOURS.WHITE
+    BUTTON_HOVERED_COLOR = (150, 150, 150)
+    BUTTON_NORMAL_COLOR = (60, 60, 60)
+
+    # Label Dimensions
+    LABEL_WIDTH = WINDOW.WIDTH * 0.8
+    LABEL_HEIGHT = LABEL_WIDTH * 0.3
+    LABEL_SIZE = LABEL_WIDTH, LABEL_HEIGHT
+
+    # Button Dimensions
+    BUTTON_WIDTH = WINDOW.WIDTH * 0.3
+    BUTTON_HEIGHT = LABEL_HEIGHT * 0.5
+    BUTTON_SIZE = BUTTON_WIDTH, BUTTON_HEIGHT
+
+    # Font Size
+    TITLE_LABEL_FONT_SIZE = 32
+    BUTTONS_FONT_SIZE = 20

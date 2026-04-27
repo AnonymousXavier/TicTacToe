@@ -17,10 +17,9 @@ class Main:
         self.clock.tick(settings.UPDATE.FPS)
         events = []
 
-        if not game_started_prev_frame and states.GAME_STARTED:
+        if not game_started_prev_frame and states.CURRENT_STATE == "GAME":
             events.append({"type": "start_game"})
-            print("Sent Start Game Event")
-        game_started_prev_frame = states.GAME_STARTED
+        game_started_prev_frame = states.CURRENT_STATE == "GAME"
 
         InputSystem.process()
 

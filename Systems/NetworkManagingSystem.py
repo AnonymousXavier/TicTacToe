@@ -1,3 +1,4 @@
+import json
 from threading import Thread
 
 from Globals import settings
@@ -26,10 +27,15 @@ class NetworkManagingSystem:
             return
 
         cls.client = ClientNetworkSystem.create_client(ip, settings.UPDATE.PORT)
-
-        Thread(
-            target=ClientNetworkSystem.connect_to_server,
-            args=(cls.client,),
-            daemon=True,
-        ).start()
         cls.client_created = True
+
+    @classmethod
+    def sync_played_move(cls, coord: tuple, char: str):
+        data = {"type": "play", "coord": coord, "char": char}
+        packet = json.dumps(data).encode()
+
+        if cls.server_created:
+            cls.server.sendall(packet)
+
+        elif cls.client_created:
+            cls.client.sendall(packet)

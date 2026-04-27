@@ -12,9 +12,10 @@ class GameHUDBuilder:
             settings.GAME_UI.SCORE_LABEL_WIDTH,
         )
         lh = settings.GAME_UI.LABEL_HEIGHT
-        m = settings.GAME_UI.MARGIN
 
-        username_label_rect = pygame.Rect((ww - ulw) // 2 + m, m, ulw, lh)
+        username_label_rect = pygame.Rect(0, 0, ulw, lh)
+        score_label_rect = pygame.Rect(ww - slw * 1.5, 0, slw, lh)
+
         username = Misc.get_username()
         font_color = (
             settings.COLOURS.RED if Misc.is_the_host() else settings.COLOURS.BLUE
@@ -24,6 +25,14 @@ class GameHUDBuilder:
             ui=ui,
             rect=username_label_rect,
             text=username,
+            text_color=font_color,
+            font_size=settings.GAME_UI.FONT_SIZE,
+        )
+
+        cls.score_label_id = Factories.create_label(
+            ui=ui,
+            rect=score_label_rect,
+            text="0:0",
             text_color=font_color,
             font_size=settings.GAME_UI.FONT_SIZE,
         )

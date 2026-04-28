@@ -2,7 +2,7 @@ import json
 from threading import Thread
 
 from Globals import settings
-from Systems import ClientNetworkSystem, GameStateManager, ServerNetworkSystem
+from Systems import ClientNetworkSystem, ServerNetworkSystem
 
 
 class NetworkManagingSystem:
@@ -43,9 +43,7 @@ class NetworkManagingSystem:
         packet = json.dumps(data).encode()
 
         cls.client.sendall(packet)
-    
+
     @classmethod
     def process(cls):
-        if len(ServerNetworkSystem.clients) >= 2:
-            GameStateManager.change_state_to("GAME")
-            
+        pass

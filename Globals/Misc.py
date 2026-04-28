@@ -2,13 +2,12 @@ import socket
 
 import pygame
 
-from Globals import settings, states
+from Globals import settings
+from Systems import ClientNetworkSystem
 from Systems.NetworkManagingSystem import NetworkManagingSystem
-
 
 def get_ip_address():
     return socket.gethostbyname(socket.gethostname())
-
 
 def get_position_rect_of(text: str, font_size, ref_rect: pygame.Rect):
     font = pygame.font.SysFont(settings.UI.FONT_NAME, font_size, True)
@@ -30,4 +29,4 @@ def is_the_host():
 
 
 def get_move_char():
-    return settings.BOARD.CHARS[states.player_id]
+    return settings.BOARD.CHARS[ClientNetworkSystem.id_on_server]

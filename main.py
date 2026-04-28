@@ -2,6 +2,7 @@ from Builders.MainMenuBuilder import MainMenuBuilder
 from Globals import settings, states
 from Globals.settings import pygame
 from Systems import ClickingSystem, HoverSystem, InputSystem, RenderingSystem, UISystem
+from Systems.NetworkManagingSystem import NetworkManagingSystem
 
 game_started_prev_frame = False
 
@@ -22,6 +23,7 @@ class Main:
         game_started_prev_frame = states.CURRENT_STATE == "GAME"
 
         InputSystem.process()
+        NetworkManagingSystem.process()
 
         HoverSystem.process(states.UI)
         ClickingSystem.process(states.UI, events)

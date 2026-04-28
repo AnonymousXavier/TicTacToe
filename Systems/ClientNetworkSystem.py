@@ -4,6 +4,8 @@ import socket
 from Globals import states
 from Systems import BoardManager
 
+id_on_server = -1
+
 
 def create_client(host: str, port: int):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

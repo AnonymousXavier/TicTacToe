@@ -1,8 +1,6 @@
 import socket
 from threading import Thread
 
-from Systems import GameStateManager
-
 clients: list[socket.socket] = []
 
 
@@ -16,7 +14,6 @@ def create_server(port: int, host: str = ""):
 def start_server(server_socket: socket.socket):
     while True:
         server_socket.listen()
-
         connection, _ = server_socket.accept()
 
         print("Connected to client")
@@ -27,7 +24,6 @@ def start_server(server_socket: socket.socket):
 
 
 def handle_connection(connection: socket.socket):
-    GameStateManager.change_state_to("GAME")
     while True:
         packet = connection.recv(1024)
 
@@ -35,6 +31,10 @@ def handle_connection(connection: socket.socket):
             break
 
         send_recieved_packet_to_everyone(packet)
+
+
+def send_join_data_to_everyone():
+    pass
 
 
 def send_recieved_packet_to_everyone(packet: bytes):

@@ -143,5 +143,5 @@ class MainMenuBuilder:
             settings.MAINMENU_UI.BUTTON_HOVERED_COLOR,
             settings.MAINMENU_UI.TEXT_COLOR,
             settings.MAINMENU_UI.BUTTONS_FONT_SIZE,
-            action="join_game",
+            action="join_lobby",
         )

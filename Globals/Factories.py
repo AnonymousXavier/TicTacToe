@@ -18,7 +18,7 @@ def create_label(
     text: str,
     text_color: tuple,
     font_size: int,
-    bg_color=None,
+    border_color=None,
 ):
     label_id = states.NEXT_ENTITY_ID
 
@@ -26,8 +26,8 @@ def create_label(
         SpatialComponent: SpatialComponent(rect=rect),
         TextComponent: TextComponent(text=text, color=text_color, size=font_size),
     }
-    if bg_color:
-        label[BackgroundComponent] = BackgroundComponent(color=bg_color)
+    if border_color:
+        label[BorderComponent] = BorderComponent(color=border_color, size=3)
 
     ui[label_id] = label
 

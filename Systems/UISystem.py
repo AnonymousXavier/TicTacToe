@@ -11,7 +11,7 @@ def process(ui: dict, events: list):
     for event in events:
         if event["type"] == "click":
             handle_click_events(ui, event)
-
+  
         if event["type"] == "start_game":
             if Misc.is_the_host():
                 MainMenuBuilder.destroy_host_menu(ui)
@@ -45,8 +45,6 @@ def handle_click_events(ui: dict, event: dict):
                 if "|" in server_ip
                 else server_ip
             )
-
-            print("Joined Game")
 
             NetworkManagingSystem.join_game(server_ip)
             GameStateManager.change_state_to("GAME")

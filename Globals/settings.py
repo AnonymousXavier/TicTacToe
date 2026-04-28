@@ -50,6 +50,8 @@ class BOARD:
     CELL_BORDER_COLOR = COLOURS.BLUE
     CELL_FONT_SIZE = GAME_UI.FONT_SIZE
 
+    CHARS = ["X", "O"]
+
 
 class UI:
     FONT_NAME = "Consolas"

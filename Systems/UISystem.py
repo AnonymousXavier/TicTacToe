@@ -27,6 +27,7 @@ def handle_click_events(ui: dict, event: dict):
         case "host":
             NetworkManagingSystem.host_game(Misc.get_ip_address())
             MainMenuBuilder.build_host_menu(states.UI)
+            NetworkManagingSystem.join_game(Misc.get_ip_address())
         case "join":
             MainMenuBuilder.build_join_menu(states.UI)
         case "edit_text":
@@ -39,19 +40,22 @@ def handle_click_events(ui: dict, event: dict):
             text_box = ui[MainMenuBuilder.server_ip_textbox_id]
             server_ip = text_box[TextComponent].text
             # Dont forget to remove the | in case it has it
-            server_ip = (
+            server_ip = (  # Itll always be the last character if it exists
                 Misc.remove_last_character_of(server_ip)
                 if "|" in server_ip
                 else server_ip
             )
 
+            print("Joined Game")
+
             NetworkManagingSystem.join_game(server_ip)
             GameStateManager.change_state_to("GAME")
 
         case "play_move":
-            BoardManager.play_move_at(ui, "X", event["id"])
+            char = Misc.get_move_char()
+            BoardManager.play_move_at(ui, char, event["id"])
 
             coord = BoardManager.get_coord_of(event["id"])
-            NetworkManagingSystem.sync_played_move(coord, "X")
+            NetworkManagingSystem.sync_played_move(coord, char)
 
             BoardManager.update_text_colors(ui)

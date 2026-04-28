@@ -1,11 +1,9 @@
-import json
 import socket
 from threading import Thread
 
-from Globals import states
-from Systems import BoardManager, GameStateManager
+from Systems import GameStateManager
 
-clients = []
+clients: list[socket.socket] = []
 
 
 def create_server(port: int, host: str = ""):
@@ -35,8 +33,10 @@ def handle_connection(connection: socket.socket):
 
         if not packet:
             break
-        else:
-            data = json.loads(packet)
-            if data["type"] == "play":
-                cell_id = BoardManager.get_cell_id_at(tuple(data["coord"]))
-                BoardManager.play_move_at(states.UI, data["char"], cell_id)
+
+        send_recieved_packet_to_everyone(packet)
+
+
+def send_recieved_packet_to_everyone(packet: bytes):
+    for client in clients:
+        client.send(packet)

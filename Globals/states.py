@@ -8,4 +8,6 @@ UI = {}
 STATES_LITERAL = Literal["MENU", "GAME"]
 
 CURRENT_STATE: STATES_LITERAL = "MENU"
+
+player_id = 0
 is_hosting: bool = False

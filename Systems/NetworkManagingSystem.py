@@ -26,7 +26,15 @@ class NetworkManagingSystem:
         if cls.client_created:
             return
 
+        print("Client Socket Created")
+
         cls.client = ClientNetworkSystem.create_client(ip, settings.UPDATE.PORT)
+        Thread(
+            target=ClientNetworkSystem.connect_to_server,
+            args=(cls.client,),
+            daemon=True,
+        ).start()
+
         cls.client_created = True
 
     @classmethod
@@ -34,8 +42,4 @@ class NetworkManagingSystem:
         data = {"type": "play", "coord": coord, "char": char}
         packet = json.dumps(data).encode()
 
-        if cls.server_created:
-            cls.server.sendall(packet)
-
-        elif cls.client_created:
-            cls.client.sendall(packet)
+        cls.client.sendall(packet)

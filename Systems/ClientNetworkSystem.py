@@ -2,10 +2,11 @@ import json
 import socket
 
 from Globals import states
-from Systems import BoardManager
+from Systems import BoardManager, GameStateManager
 
 id_on_server = -1
 connected_players = 0
+ready_players = []  # Store ID of players that are ready
 
 
 def create_client(host: str, port: int):
@@ -28,7 +29,7 @@ def connect_to_server(client: socket.socket):
 
 
 def recieve_packet(packet: bytes):
-    global id_on_server, connected_players
+    global id_on_server, connected_players, ready_players
 
     data = json.loads(packet)
 
@@ -38,10 +39,18 @@ def recieve_packet(packet: bytes):
             BoardManager.play_move_at(states.UI, data["char"], cell_id)
             BoardManager.update_text_colors(states.UI)
         case "roster":
-            print(packet)
             id_on_server = data["id"]
             connected_players = data["players"]
+            ready_players = data["ready_players"]
 
-            print(
-                f"My ID is {id_on_server} and there are {connected_players} ppl connected"
-            )
+            states.id_on_server = id_on_server
+        case "ready":
+            ready_players = data["all"]
+        case "start_game":
+            GameStateManager.change_state_to("GAME")
+
+
+def prompt_ready(client: socket.socket):
+    data = {"type": "prompt", "prompt": "ready", "id": id_on_server}
+    packet = json.dumps(data).encode()
+    client.sendall(packet)

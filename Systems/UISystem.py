@@ -1,7 +1,13 @@
+from Builders.GameBoardBuilder import BoardBuilder
 from Builders.MainMenuBuilder import MainMenuBuilder
 from Globals import Misc, states
 from Globals.Components import EditTextComponent, TextComponent
-from Systems import BoardManager, GameStateManager
+from Systems import (
+    BoardManager,
+    ClientNetworkSystem,
+    GameStateManager,
+    ServerNetworkSystem,
+)
 from Systems.NetworkManagingSystem import NetworkManagingSystem
 
 
@@ -44,9 +50,17 @@ def handle_click_events(ui: dict, event: dict):
 
         case "play_move":
             char = Misc.get_move_char()
+            print(event["id"])
+            print(BoardBuilder.board_cells_ids)
             BoardManager.play_move_at(ui, char, event["id"])
 
             coord = BoardManager.get_coord_of(event["id"])
             NetworkManagingSystem.sync_played_move(coord, char)
 
             BoardManager.update_text_colors(ui)
+
+        case "toggle_ready":
+            ClientNetworkSystem.prompt_ready(NetworkManagingSystem.client)
+
+        case "start_game":
+            ServerNetworkSystem.tell_everyone_start_game()  # The each client sends the event

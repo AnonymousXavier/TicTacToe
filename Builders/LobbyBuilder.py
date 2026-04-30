@@ -43,19 +43,25 @@ class LobbyBuilder:
             font_size=settings.LOBBY_UI.BUTTON_FONT_SIZE,
         )
 
+        cls.ip_label = Factories.create_label(
+            ui,
+            pygame.Rect((ww - tw) / 2, th, tw, th // 2),
+            f"IP: {Misc.get_ip_address()}",
+            settings.LOBBY_UI.TEXT_COLOR,
+            20,
+        )
+
         cls.add_joined_players(ui)
 
     @classmethod
     def delete_joined_players(cls, ui: dict):
         for label_id in cls.connected_players_labels:
-            del ui[label_id]
+            if label_id in ui:
+                del ui[label_id]
 
     @classmethod
     def update_joined_player(cls, ui: dict):
-        try:
-            cls.delete_joined_players(ui)
-        except Exception as err:
-            print(err)
+        cls.delete_joined_players(ui)
         cls.add_joined_players(ui)
 
     @classmethod
@@ -67,25 +73,30 @@ class LobbyBuilder:
         )
         th = settings.LOBBY_UI.TITLE_LABEL_HEIGHT
 
-        y = th
+        y = th * 1.4
         for i in range(ClientNetworkSystem.connected_players):
-            text = settings.BOARD.CHARS[ClientNetworkSystem.id_on_server]
             rect = pygame.Rect((ww - pw) / 2, y, pw, ph)
 
-            print(
-                ClientNetworkSystem.connected_players, ClientNetworkSystem.id_on_server
+            if i == ClientNetworkSystem.id_on_server:
+                text = " (YOU) "  # Just sm personalization
+            else:
+                text = "       "  # For Consistency in layout
+
+            border_color = (
+                settings.COLOURS.GREEN
+                if i in ClientNetworkSystem.ready_players
+                else settings.COLOURS.RED
             )
 
-            if i == ClientNetworkSystem.id_on_server:
-                text += " (YOU)"  # Just sm personalization
-
+            text += settings.BOARD.CHARS[i]
             label_id = Factories.create_label(
                 ui,
                 rect,
                 text,
                 settings.LOBBY_UI.TEXT_COLOR,
                 settings.LOBBY_UI.TITLE_FONT_SIZE,
-                settings.LOBBY_UI.BORDER_COLOR,
+                border_color,
+                border_size=1,
             )
 
             cls.connected_players_labels.append(label_id)
@@ -94,4 +105,8 @@ class LobbyBuilder:
 
     @classmethod
     def destroy(cls, ui: dict):
-        pass
+        del ui[cls.title_label]
+        del ui[cls.ip_label]
+        del ui[cls.start_game_btn]
+
+        cls.delete_joined_players(ui)

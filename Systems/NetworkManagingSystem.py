@@ -1,7 +1,7 @@
 import json
 from threading import Thread
 
-from Globals import settings
+from Globals import settings, states
 from Systems import ClientNetworkSystem, ServerNetworkSystem
 
 
@@ -20,6 +20,8 @@ class NetworkManagingSystem:
         ).start()
 
         cls.server_created = True
+
+        states.is_hosting = True
 
     @classmethod
     def join_game(cls, ip: str):

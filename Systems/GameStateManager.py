@@ -3,13 +3,14 @@ from Builders.GameHUD import GameHUDBuilder
 from Builders.LobbyBuilder import LobbyBuilder
 from Builders.MainMenuBuilder import MainMenuBuilder
 from Globals import Misc, states
-from Systems import ServerNetworkSystem
+from Systems import ClientNetworkSystem, ServerNetworkSystem
 
 has_joined_lobby = False
+last_number_of_players = 0
 
 
 def process():
-    global has_joined_lobby
+    global has_joined_lobby, last_number_of_players
 
     if not has_joined_lobby and len(
         ServerNetworkSystem.clients
@@ -18,7 +19,9 @@ def process():
         has_joined_lobby = True
 
     if states.CURRENT_STATE == "LOBBY":
-        LobbyBuilder.update_joined_player(states.UI)
+        if ClientNetworkSystem.connected_players != last_number_of_players:
+            LobbyBuilder.update_joined_player(states.UI)
+            last_number_of_players = ClientNetworkSystem.connected_players
 
 
 def change_state_to(new_state: states.STATES_LITERAL):

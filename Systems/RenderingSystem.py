@@ -16,7 +16,7 @@ frame = 1
 def process(ui: dict, surface: pygame.Surface):
     global frame
 
-    for element in ui.values():
+    for element in list(ui.values()):
         if SpatialComponent not in element:
             continue
 

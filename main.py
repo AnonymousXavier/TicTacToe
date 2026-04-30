@@ -1,9 +1,14 @@
 from Builders.MainMenuBuilder import MainMenuBuilder
 from Globals import settings, states
 from Globals.settings import pygame
-from Systems import ClickingSystem, HoverSystem, InputSystem, RenderingSystem, UISystem
-
-game_started_prev_frame = False
+from Systems import (
+    ClickingSystem,
+    GameStateManager,
+    HoverSystem,
+    InputSystem,
+    RenderingSystem,
+    UISystem,
+)
 
 
 class Main:
@@ -13,14 +18,10 @@ class Main:
         MainMenuBuilder.build(states.UI)
 
     def update(self):
-        global game_started_prev_frame
         self.clock.tick(settings.UPDATE.FPS)
         events = []
 
-        if not game_started_prev_frame and states.CURRENT_STATE == "GAME":
-            events.append({"type": "start_game"})
-        game_started_prev_frame = states.CURRENT_STATE == "GAME"
-
+        GameStateManager.process()
         InputSystem.process()
 
         HoverSystem.process(states.UI)

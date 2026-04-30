@@ -5,9 +5,9 @@ NEXT_ENTITY_ID = 1
 
 
 UI = {}
-STATES_LITERAL = Literal["MENU", "GAME"]
+STATES_LITERAL = Literal["MENU", "LOBBY", "GAME"]
 
 CURRENT_STATE: STATES_LITERAL = "MENU"
 
-player_id = 0
 is_hosting: bool = False
+id_on_server: int = -1  # Avoids circular imports

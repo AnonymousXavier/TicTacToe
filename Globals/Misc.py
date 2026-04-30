@@ -3,7 +3,6 @@ import socket
 import pygame
 
 from Globals import settings, states
-from Systems.NetworkManagingSystem import NetworkManagingSystem
 
 
 def get_ip_address():
@@ -26,8 +25,8 @@ def get_username():
 
 
 def is_the_host():
-    return NetworkManagingSystem.server_created
+    return states.is_hosting
 
 
 def get_move_char():
-    return settings.BOARD.CHARS[states.player_id]
+    return settings.BOARD.CHARS[states.id_on_server]

@@ -1,9 +1,13 @@
 from Builders.GameBoardBuilder import BoardBuilder
-from Builders.GameHUD import GameHUDBuilder
 from Builders.MainMenuBuilder import MainMenuBuilder
 from Globals import Misc, states
 from Globals.Components import EditTextComponent, TextComponent
-from Systems import BoardManager, GameStateManager
+from Systems import (
+    BoardManager,
+    ClientNetworkSystem,
+    GameStateManager,
+    ServerNetworkSystem,
+)
 from Systems.NetworkManagingSystem import NetworkManagingSystem
 
 
@@ -13,27 +17,22 @@ def process(ui: dict, events: list):
             handle_click_events(ui, event)
 
         if event["type"] == "start_game":
-            if Misc.is_the_host():
-                MainMenuBuilder.destroy_host_menu(ui)
-            else:
-                MainMenuBuilder.destroy_join_menu(ui)
-
-            GameHUDBuilder.build(ui)
-            BoardBuilder.build(ui)
+            GameStateManager.change_state_to("GAME")
 
 
 def handle_click_events(ui: dict, event: dict):
     match event["action"]:
         case "host":
             NetworkManagingSystem.host_game(Misc.get_ip_address())
-            MainMenuBuilder.build_host_menu(states.UI)
             NetworkManagingSystem.join_game(Misc.get_ip_address())
+            GameStateManager.change_state_to("MENU")
         case "join":
-            MainMenuBuilder.build_join_menu(states.UI)
+            GameStateManager.change_state_to("MENU")
         case "edit_text":
             ui[event["id"]][EditTextComponent].editing = True
-        case "join_game":
-            if states.CURRENT_STATE == "GAME":
+
+        case "join_lobby":
+            if states.CURRENT_STATE == "LOBBY":
                 return
 
             # Fetch IP from textbox
@@ -46,16 +45,22 @@ def handle_click_events(ui: dict, event: dict):
                 else server_ip
             )
 
-            print("Joined Game")
-
             NetworkManagingSystem.join_game(server_ip)
-            GameStateManager.change_state_to("GAME")
+            GameStateManager.change_state_to("LOBBY")
 
         case "play_move":
             char = Misc.get_move_char()
+            print(event["id"])
+            print(BoardBuilder.board_cells_ids)
             BoardManager.play_move_at(ui, char, event["id"])
 
             coord = BoardManager.get_coord_of(event["id"])
             NetworkManagingSystem.sync_played_move(coord, char)
 
             BoardManager.update_text_colors(ui)
+
+        case "toggle_ready":
+            ClientNetworkSystem.prompt_ready(NetworkManagingSystem.client)
+
+        case "start_game":
+            ServerNetworkSystem.tell_everyone_start_game()  # The each client sends the event

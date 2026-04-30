@@ -15,9 +15,10 @@ class BoardBuilder:
         )
 
         ox, oy = (
-            settings.BOARD.SPACING / 2,
+            settings.BOARD.SPACING / 2 + settings.BOARD.LEFT_PADDING,
             settings.GAME_UI.LABEL_HEIGHT + settings.BOARD.SPACING / 2,
         )
+
         for yi in range(settings.BOARD.ROWS):
             for xi in range(settings.BOARD.COLS):
                 x, y = ox + xi * (cw + s), yi * (ch + s) + oy

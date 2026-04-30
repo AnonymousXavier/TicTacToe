@@ -1,6 +1,7 @@
-from Builders.GameBoardBuilder import BoardBuilder
+import pygame
+
 from Builders.MainMenuBuilder import MainMenuBuilder
-from Globals import Misc, states
+from Globals import Misc, settings, states
 from Globals.Components import EditTextComponent, TextComponent
 from Systems import (
     BoardManager,
@@ -10,6 +11,8 @@ from Systems import (
 )
 from Systems.NetworkManagingSystem import NetworkManagingSystem
 
+delay_frames_left_for_event = {}  # dont process an event if the time here isnt 0
+
 
 def process(ui: dict, events: list):
     for event in events:
@@ -18,6 +21,16 @@ def process(ui: dict, events: list):
 
         if event["type"] == "start_game":
             GameStateManager.change_state_to("GAME")
+
+    event_delays_completed = []
+    for event_name, frames_left in delay_frames_left_for_event.items():
+        if frames_left <= 0:
+            event_delays_completed.append(event_name)
+        else:
+            delay_frames_left_for_event[event_name] -= 1
+
+    for event_name in event_delays_completed:
+        del delay_frames_left_for_event[event_name]
 
 
 def handle_click_events(ui: dict, event: dict):
@@ -49,15 +62,25 @@ def handle_click_events(ui: dict, event: dict):
             GameStateManager.change_state_to("LOBBY")
 
         case "play_move":
+            if not ClientNetworkSystem.can_play:
+                return
+
+            # To avoid spamming the server
+            if "play_move" in delay_frames_left_for_event:
+                return
+
             char = Misc.get_move_char()
-            print(event["id"])
-            print(BoardBuilder.board_cells_ids)
             BoardManager.play_move_at(ui, char, event["id"])
 
             coord = BoardManager.get_coord_of(event["id"])
             NetworkManagingSystem.sync_played_move(coord, char)
 
             BoardManager.update_text_colors(ui)
+            pygame.time.wait(100)
+
+            delay_frames_left_for_event["play_move"] = int(
+                settings.UPDATE.FPS * 0.5
+            )  # 1/2 sec
 
         case "toggle_ready":
             ClientNetworkSystem.prompt_ready(NetworkManagingSystem.client)

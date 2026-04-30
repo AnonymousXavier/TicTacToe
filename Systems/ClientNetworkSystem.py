@@ -4,7 +4,10 @@ import socket
 from Globals import states
 from Systems import BoardManager, GameStateManager
 
+# Data Managed by server
 id_on_server = -1
+can_play = False  # Is the Clients turn
+
 connected_players = 0
 ready_players = []  # Store ID of players that are ready
 
@@ -29,7 +32,7 @@ def connect_to_server(client: socket.socket):
 
 
 def recieve_packet(packet: bytes):
-    global id_on_server, connected_players, ready_players
+    global id_on_server, connected_players, ready_players, can_play
 
     data = json.loads(packet)
 
@@ -48,6 +51,8 @@ def recieve_packet(packet: bytes):
             ready_players = data["all"]
         case "start_game":
             GameStateManager.change_state_to("GAME")
+        case "turn":
+            can_play = data["current"] == id_on_server
 
 
 def prompt_ready(client: socket.socket):

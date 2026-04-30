@@ -2,8 +2,11 @@ import json
 import socket
 from threading import Thread
 
+from Globals import settings
+
 clients: list[socket.socket] = []
 ready_players = []
+current_turn = 0
 
 
 def create_server(port: int, host: str = ""):
@@ -21,6 +24,7 @@ def start_server(server_socket: socket.socket):
         print(f"Connected to client {len(clients)}")
         clients.append(connection)
         send_join_data_to_everyone()
+        tell_everyone_whos_turn_it_is()
 
         # A thread per client
         Thread(target=handle_connection, args=(connection,), daemon=True).start()
@@ -38,7 +42,7 @@ def handle_connection(connection: socket.socket):
 
 
 def manage_sent_packets(packet: byte):
-    global ready_players
+    global ready_players, current_turn
     data = json.loads(packet)
 
     match data["type"]:
@@ -49,6 +53,9 @@ def manage_sent_packets(packet: byte):
                     set(ready_players)
                 )  # In case we recieve duplicates
                 send_ready_players_to_everyone()
+        case "play":  # A move was played
+            current_turn += 1
+            tell_everyone_whos_turn_it_is()
 
 
 def send_ready_players_to_everyone():
@@ -68,6 +75,13 @@ def send_join_data_to_everyone():
         roster_packet = json.dumps(roster_data).encode()
 
         client.send(roster_packet)
+
+
+def tell_everyone_whos_turn_it_is():
+    turn_id = current_turn % len(settings.BOARD.CHARS)
+    data = {"type": "turn", "current": turn_id}
+
+    send_to_everyone(data)
 
 
 def tell_everyone_start_game():

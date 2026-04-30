@@ -7,10 +7,11 @@ from Systems import ClientNetworkSystem, ServerNetworkSystem
 
 has_joined_lobby = False
 last_number_of_players = 0
+ready_players = 0
 
 
 def process():
-    global has_joined_lobby, last_number_of_players
+    global has_joined_lobby, last_number_of_players, ready_players
 
     if not has_joined_lobby and len(
         ServerNetworkSystem.clients
@@ -19,9 +20,14 @@ def process():
         has_joined_lobby = True
 
     if states.CURRENT_STATE == "LOBBY":
-        if ClientNetworkSystem.connected_players != last_number_of_players:
+        if (
+            ClientNetworkSystem.connected_players != last_number_of_players
+            or len(ClientNetworkSystem.ready_players) != ready_players
+        ):
             LobbyBuilder.update_joined_player(states.UI)
+
             last_number_of_players = ClientNetworkSystem.connected_players
+            ready_players = len(ClientNetworkSystem.ready_players)
 
 
 def change_state_to(new_state: states.STATES_LITERAL):

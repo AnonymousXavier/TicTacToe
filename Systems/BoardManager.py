@@ -6,7 +6,6 @@ from Globals.Components import TextComponent
 def update_text_colors(ui: dict):
     for cell_id in BoardBuilder.board_cells_ids.values():
         cell = ui[cell_id]
-        print(cell[TextComponent])
 
         if cell[TextComponent].text == "X":
             cell[TextComponent].color = settings.BOARD.X_TEXT_COLOR
@@ -19,7 +18,7 @@ def get_cell_id_at(target_coord: tuple):
 
 
 def get_coord_of(target_cell_id: int):
-    for coord, cell_id in BoardBuilder.board_cells_ids:
+    for coord, cell_id in BoardBuilder.board_cells_ids.items():
         if cell_id == target_cell_id:
             return coord
 

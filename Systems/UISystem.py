@@ -17,6 +17,8 @@ def process(ui: dict, events: list):
         if event["type"] == "click":
             handle_click_events(ui, event)
 
+            print(event["action"])
+
         if event["type"] == "start_game":
             GameStateManager.change_state_to("GAME")
 
@@ -89,4 +91,4 @@ def handle_click_events(ui: dict, event: dict):
             ServerNetworkSystem.tell_everyone_start_game()  # Then each client sends the event
 
         case "retry":
-            GameStateManager.change_state_to("GAME")
+            ClientNetworkSystem.prompt_retry(NetworkManagingSystem.client)

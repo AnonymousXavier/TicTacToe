@@ -40,25 +40,31 @@ def handle_connection(connection: socket.socket):
         send_to_everyone(packet)
 
 
-def manage_sent_packets(packet: byte):
+def manage_sent_packets(raw_packet: bytes):
     global ready_players
-    data = json.loads(packet)
 
-    match data["type"]:
-        case "prompt":
-            if data["prompt"] == "ready":
-                ready_players.append(data["id"])
-                ready_players = list(
-                    set(ready_players)
-                )  # In case we recieve duplicates
-                send_ready_players_to_everyone()
-        case "play":  # A move was played
-            states.current_turn += 1
-            tell_everyone_whos_turn_it_is()
-        case "won":
-            print(f"{data['id']} WON")
-        case "draw":
-            print("Game Drawn")
+    split_packet = raw_packet.split(b"}")  # In case we recieved 2 data simultaneously
+
+    for packet in split_packet:
+        if not packet:
+            continue
+
+        if b"}" not in packet:
+            packet += b"}"
+
+        data = json.loads(packet)
+
+        match data["type"]:
+            case "prompt":
+                if data["prompt"] == "ready":
+                    ready_players.append(data["id"])
+                    ready_players = list(
+                        set(ready_players)
+                    )  # In case we recieve duplicates
+                    send_ready_players_to_everyone()
+            case "play":  # A move was played
+                states.current_turn += 1
+                tell_everyone_whos_turn_it_is()
 
 
 def send_ready_players_to_everyone():

@@ -66,6 +66,8 @@ def recieve_packet(packet: bytes):
         case "draw":
             states.draw = True
             GameStateManager.change_state_to("OVER")
+        case "retry":
+            GameStateManager.change_state_to("GAME")
 
 
 def prompt_ready(client: socket.socket):
@@ -86,3 +88,8 @@ def prompt_draw(client: socket.socket):
 def send_to_server(client: socket.socket, data: dict):
     packet = json.dumps(data).encode()
     client.send(packet)
+
+
+def prompt_retry(client: socket.socket):
+    data = {"type": "retry"}
+    send_to_server(client, data)

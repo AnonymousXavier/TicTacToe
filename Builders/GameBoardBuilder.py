@@ -38,3 +38,8 @@ class BoardBuilder:
                 )
 
                 cls.board_cells_ids[(xi, yi)] = cell_id
+
+    @classmethod
+    def destroy(cls, ui: dict):
+        for cell_id in cls.board_cells_ids.values():
+            del ui[cell_id]

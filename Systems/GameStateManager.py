@@ -51,6 +51,7 @@ def transition_to_next_state(
                 LobbyBuilder.destroy(ui)
             case "OVER":
                 GameHUDBuilder.destroy(ui)
+                BoardBuilder.destroy(ui)
                 states.reset()
 
     # Add New UI based on the target state

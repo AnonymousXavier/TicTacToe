@@ -46,3 +46,29 @@ class GameHUDBuilder:
             text_color=font_color,
             font_size=settings.GAME_UI.FONT_SIZE,
         )
+
+    @classmethod
+    def draw_overlay(cls, ui: dict, message: str, color: tuple, font_size: int):
+        ww, wh = settings.WINDOW.SIZE
+        bw, bh = ww * 0.2, wh * 0.1
+        cls.overlap_id = Factories.create_label(
+            ui, pygame.Rect(0, 0, ww, wh), message, color, font_size
+        )
+        cls.retry_btn = Factories.create_button(
+            ui,
+            pygame.Rect((ww - bw) / 2, (wh - bh) / 2 + bh, bw, bh),
+            "RETRY",
+            settings.MAINMENU_UI.BUTTON_NORMAL_COLOR,
+            settings.MAINMENU_UI.BUTTON_HOVERED_COLOR,
+            settings.MAINMENU_UI.TEXT_COLOR,
+            settings.MAINMENU_UI.BUTTONS_FONT_SIZE,
+            "retry",
+        )
+
+    @classmethod
+    def destroy(cls, ui: dict):
+        del ui[cls.overlap_id]
+        del ui[cls.score_label_id]
+        del ui[cls.turn_label_id]
+        del ui[cls.username_label_id]
+        del ui[cls.retry_btn]

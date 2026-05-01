@@ -2,7 +2,7 @@ from Builders.GameBoardBuilder import BoardBuilder
 from Builders.GameHUD import GameHUDBuilder
 from Builders.LobbyBuilder import LobbyBuilder
 from Builders.MainMenuBuilder import MainMenuBuilder
-from Globals import Misc, states
+from Globals import Misc, settings, states
 from Systems import ClientNetworkSystem, ServerNetworkSystem
 
 has_joined_lobby = False
@@ -49,6 +49,9 @@ def transition_to_next_state(
                     MainMenuBuilder.destroy_join_menu(ui)
             case "LOBBY":
                 LobbyBuilder.destroy(ui)
+            case "OVER":
+                GameHUDBuilder.destroy(ui)
+                states.reset()
 
     # Add New UI based on the target state
     init(ui, _to)
@@ -68,3 +71,15 @@ def init(ui: dict, _state: states.STATES_LITERAL):
                 MainMenuBuilder.build_host_menu(ui)
             else:
                 MainMenuBuilder.build_join_menu(ui)
+        case "OVER":
+            if states.draw:
+                message = "DRAW"
+                color = settings.COLOURS.BLUE
+            elif states.won:
+                message = "YOU WON"
+                color = settings.COLOURS.GREEN
+            else:
+                message = "YOU LOST"
+                color = settings.COLOURS.RED
+
+            GameHUDBuilder.draw_overlay(ui, message, color, 64)

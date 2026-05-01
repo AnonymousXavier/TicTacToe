@@ -1,5 +1,3 @@
-import pygame
-
 from Builders.MainMenuBuilder import MainMenuBuilder
 from Globals import Misc, settings, states
 from Globals.Components import EditTextComponent, TextComponent
@@ -62,7 +60,8 @@ def handle_click_events(ui: dict, event: dict):
             GameStateManager.change_state_to("LOBBY")
 
         case "play_move":
-            if not ClientNetworkSystem.can_play:
+            # Only Play if its your turn
+            if not states.can_play:
                 return
 
             # To avoid spamming the server
@@ -75,15 +74,19 @@ def handle_click_events(ui: dict, event: dict):
             coord = BoardManager.get_coord_of(event["id"])
             NetworkManagingSystem.sync_played_move(coord, char)
 
-            BoardManager.update_text_colors(ui)
-            pygame.time.wait(100)
+            BoardManager.update_board(ui)
 
             delay_frames_left_for_event["play_move"] = int(
                 settings.UPDATE.FPS * 0.5
             )  # 1/2 sec
 
+            BoardManager.process(ui, char)
+
         case "toggle_ready":
             ClientNetworkSystem.prompt_ready(NetworkManagingSystem.client)
 
         case "start_game":
-            ServerNetworkSystem.tell_everyone_start_game()  # The each client sends the event
+            ServerNetworkSystem.tell_everyone_start_game()  # Then each client sends the event
+
+        case "retry":
+            GameStateManager.change_state_to("GAME")

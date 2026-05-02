@@ -10,7 +10,7 @@ STATES_LITERAL = Literal["MENU", "LOBBY", "GAME", "OVER"]
 CURRENT_STATE: STATES_LITERAL = "MENU"
 
 is_hosting: bool = False
-id_on_server: int = -1  # Avoids circular imports
+id_on_server: int = -1
 
 
 draw = False

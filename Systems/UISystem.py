@@ -61,7 +61,6 @@ def handle_click_events(ui: dict, event: dict):
 
         case "play_move":
             # Only Play if its your turn
-            print(states.can_play, event["action"])
             if not states.can_play:
                 return
 

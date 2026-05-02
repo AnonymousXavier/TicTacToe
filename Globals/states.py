@@ -26,3 +26,7 @@ def reset():
     won = False
     can_play = False
     current_turn = 0
+
+    # Buf if youre the host, play first
+    if is_hosting:
+        can_play = True

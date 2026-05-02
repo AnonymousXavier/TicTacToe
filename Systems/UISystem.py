@@ -17,8 +17,6 @@ def process(ui: dict, events: list):
         if event["type"] == "click":
             handle_click_events(ui, event)
 
-            print(event["action"])
-
         if event["type"] == "start_game":
             GameStateManager.change_state_to("GAME")
 
@@ -63,6 +61,7 @@ def handle_click_events(ui: dict, event: dict):
 
         case "play_move":
             # Only Play if its your turn
+            print(states.can_play, event["action"])
             if not states.can_play:
                 return
 

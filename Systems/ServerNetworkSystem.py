@@ -46,7 +46,7 @@ def manage_sent_packets(raw_packet: bytes):
     split_packet = raw_packet.split(b"}")  # In case we recieved 2 data simultaneously
 
     for packet in split_packet:
-        if not packet:
+        if not packet:  # Is an empty byte string
             continue
 
         if b"}" not in packet:

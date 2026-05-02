@@ -47,7 +47,7 @@ class NetworkManagingSystem:
         cls.client.sendall(packet)
 
         # Force them to be unable to play After
-        ClientNetworkSystem.can_play = False
+        states.can_play = False
 
     @classmethod
     def process(cls):
